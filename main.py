@@ -61,7 +61,7 @@ class Sale(Base):
 
 
 def create_tables(engine):
-    Base.metadata.drop_all(engine)  # Очистка БД перед созданием новых таблиц
+    Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
 
@@ -96,7 +96,7 @@ for entry in data:
 
     if model_class:
         entry_data = entry['fields']
-        entry_data['id'] = entry.pop('pk')  # Исправлено: добавляем ID вручную
+        entry_data['id'] = entry.pop('pk')
         session.add(model_class(**entry_data))
 
 # Сохраняем изменения в БД
@@ -113,7 +113,7 @@ else:
 
 # Если издатель найден
 if publisher:
-    print(f"\n📚 Факты покупок книг издателя: {publisher.name}\n")
+    print(f"\nФакты покупок книг издателя: {publisher.name}\n")
 
     query = (
         session.query(Book.title, Shop.name, Sale.price, Sale.date_sale)
@@ -121,7 +121,7 @@ if publisher:
         .join(Shop, Shop.id == Stock.id_shop)
         .join(Sale, Sale.id_stock == Stock.id)
         .filter(Book.id_publisher == publisher.id)
-        .order_by(Sale.date_sale.desc())  # Сортировка по дате убывания
+        .order_by(Sale.date_sale.desc())
     )
 
     results = query.all()
@@ -130,9 +130,9 @@ if publisher:
         for book_title, shop_name, price, date_sale in results:
             print(f"{book_title} | {shop_name:<12} | {price:<5} | {date_sale.strftime('%d-%m-%Y')}")
     else:
-        print("❌ У этого издателя нет продаж.")
+        print("У этого издателя нет продаж.")
 
 else:
-    print("❌ Издатель не найден!")
+    print("Издатель не найден!")
 
 session.close()
